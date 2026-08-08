@@ -298,10 +298,10 @@ end
 --]]
 local function render_general_config(settings)
     imgui.Text('General Settings');
-    imgui.BeginChild('settings_general', {
+imgui.BeginChild('settings_general', {
         0,
         imgui.GetTextLineHeightWithSpacing() * ((MAX_HEIGHT_IN_LINES / 3) + 1)
-    }, true, ImGuiWindowFlags_AlwaysAutoResize);
+    });
     if (imgui.Checkbox('Visible', hxiclam.settings.visible)) then
         -- if the checkbox is interacted with, reset the last_attempt
         -- to force the window back open
@@ -352,7 +352,7 @@ local function render_general_config(settings)
     imgui.Text('Clamming Display Settings');
     imgui.BeginChild('clam_general', {
         0, imgui.GetTextLineHeightWithSpacing() * MAX_HEIGHT_IN_LINES * 2 / 3
-    }, true, ImGuiWindowFlags_AlwaysAutoResize);
+    });
     if (imgui.RadioButton('Hide Session Stats',
                           hxiclam.settings.session_view == 0)) then
         hxiclam.settings.session_view = 0;
@@ -459,7 +459,7 @@ local function render_item_price_config(settings)
     imgui.Text('Item Prices');
     imgui.BeginChild('settings_general', {
         0, imgui.GetTextLineHeightWithSpacing() * MAX_HEIGHT_IN_LINES
-    }, true, ImGuiWindowFlags_AlwaysAutoResize);
+    });
 
     imgui.InputInt('Bucket Cost', hxiclam.settings.clamming.bucket_cost);
     imgui.ShowHelp('Cost of a single bucket.');
@@ -483,7 +483,7 @@ local function render_item_weight_config(settings)
     imgui.Text('Item Weights');
     imgui.BeginChild('settings_general', {
         0, imgui.GetTextLineHeightWithSpacing() * MAX_HEIGHT_IN_LINES
-    }, true, ImGuiWindowFlags_AlwaysAutoResize);
+    });
 
     local temp_strings = T {};
     temp_strings[1] = table.concat(hxiclam.settings.item_weight_index, '\n');
@@ -558,15 +558,15 @@ local function render_editor()
 
         if (imgui.BeginTabBar('##hxiclam_tabbar',
                               ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) then
-            if (imgui.BeginTabItem('General', nil)) then
+            if (imgui.BeginTabItem('General', nil, 0)) then
                 render_general_config(settings);
                 imgui.EndTabItem();
             end
-            if (imgui.BeginTabItem('Item Price', nil)) then
+            if (imgui.BeginTabItem('Item Price', nil, 0)) then
                 render_item_price_config(settings);
                 imgui.EndTabItem();
             end
-            if (imgui.BeginTabItem('Item Weight', nil)) then
+            if (imgui.BeginTabItem('Item Weight', nil, 0)) then
                 render_item_weight_config(settings);
                 imgui.EndTabItem();
             end
@@ -873,9 +873,9 @@ ashita.events.register('d3d_present', 'present_cb', function()
         local total_worth = 0;
         local bucket_total = 0;
 
-        imgui.SetWindowFontScale(hxiclam.settings.font_scale[1] + 0.1);
+        -- SetWindowFontScale was removed from the current ImGui API.
         imgui.Text('Bucket Stats:');
-        imgui.SetWindowFontScale(hxiclam.settings.bucket_weight_font_scale[1]);
+        -- Font scaling is handled by Ashita's current ImGui font system.
         imgui.Text('Bucket Weight: ');
         imgui.SameLine();
         if ((hxiclam.settings.bucket_capacity - hxiclam.settings.bucket_weight) <=
@@ -893,7 +893,7 @@ ashita.events.register('d3d_present', 'present_cb', function()
             imgui.Text(tostring(hxiclam.settings.bucket_weight) .. '/' ..
                            hxiclam.settings.bucket_capacity);
         end
-        imgui.SetWindowFontScale(hxiclam.settings.font_scale[1]);
+        -- Font scaling is handled by Ashita's current ImGui font system.
 
         imgui.Text('Dig Timer: ');
         imgui.SameLine();
@@ -973,9 +973,9 @@ ashita.events.register('d3d_present', 'present_cb', function()
 
         if (hxiclam.settings.session_view > 0) then
             imgui.Separator();
-            imgui.SetWindowFontScale(hxiclam.settings.font_scale[1] + 0.1);
+            -- SetWindowFontScale was removed from the current ImGui API.
             imgui.Text('Session Stats:');
-            imgui.SetWindowFontScale(hxiclam.settings.font_scale[1]);
+            -- Font scaling is handled by Ashita's current ImGui font system.
             imgui.Text('Buckets Cost: ' ..
                            format_int(hxiclam.settings.bucket_count *
                                           hxiclam.settings.clamming.bucket_cost[1]));
